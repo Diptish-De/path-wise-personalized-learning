@@ -1,0 +1,45 @@
+name: CI - Build & Test
+
+on:
+  # Triggers on push to main branch
+  push:
+    branches: [main]
+  # Triggers on pull requests to main branch
+  pull_request:
+    branches: [main]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # Step 4: Run linter
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: true
+
+      # Step 5: Build the project
+      - name: Build Project
+        run: npm run build
+
+      # Step 6: Success message
+      - name: Build Complete
+        run: echo "✅ Build completed successfully!"
