@@ -1,0 +1,30 @@
+[
+  {
+    "externalId": "q1",
+    "subject": "Mathematics",
+    "chapter": "Algebra",
+    "topic": "Linear Equations",
+    "text": "What is the value of x if 2x + 3 = 11?",
+    "difficulty": 1,
+    "explanation": "2x + 3 = 11 => 2x = 8 => x = 4",
+    "choices": [
+      { "text": "3", "isCorrect": false },
+      { "text": "4", "isCorrect": true },
+      { "text": "5", "isCorrect": false }
+    ]
+  },
+  {
+    "externalId": "q2",
+    "subject": "Science",
+    "chapter": "Physics",
+    "topic": "Motion",
+    "text": "Which of the following is a vector quantity?",
+    "difficulty": 2,
+    "explanation": "Velocity has both magnitude and direction, so it's a vector.",
+    "choices": [
+      { "text": "Speed", "isCorrect": false },
+      { "text": "Velocity", "isCorrect": true },
+      { "text": "Distance", "isCorrect": false }
+    ]
+  }
+]

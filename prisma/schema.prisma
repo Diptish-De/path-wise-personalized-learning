@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// MongoDB models use String ids mapped to ObjectId
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  role      String   @default("student")
+  password  String?
+  createdAt DateTime @default(now())
+  profile   StudentProfile?
+  attempts  Attempt[]
+}
+
+model Subject {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String   @unique
+  chapters Chapter[]
+}
+
+model Chapter {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String   @db.ObjectId
+  topics    Topic[]
+
+  @@unique([title, subjectId], name: "title_subject")
+}
+
+model Topic {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id])
+  chapterId String   @db.ObjectId
+  questions Question[]
+
+  @@unique([title, chapterId], name: "title_chapter")
+}
+
+model Question {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  externalId  String?  @unique
+  text        String
+  difficulty  Int?
+  explanation String?
+  topic       Topic?   @relation(fields: [topicId], references: [id])
+  topicId     String?  @db.ObjectId
+  choices     Choice[]
+}
+
+model Choice {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  text       String
+  isCorrect  Boolean  @default(false)
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String   @db.ObjectId
+}
+
+model Attempt {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String    @db.ObjectId
+  score      Float?
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  responses  Response[]
+}
+
+model Response {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  attempt    Attempt  @relation(fields: [attemptId], references: [id])
+  attemptId  String   @db.ObjectId
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String   @db.ObjectId
+  choice     Choice?  @relation(fields: [choiceId], references: [id])
+  choiceId   String?  @db.ObjectId
+  correct    Boolean
+  timeMs     Int?
+}
+
+model StudentProfile {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  user              User   @relation(fields: [userId], references: [id])
+  userId            String @unique @db.ObjectId
+  classLevel        String?
+  preferredSubjects String?
+}
